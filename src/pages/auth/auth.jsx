@@ -9,17 +9,41 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const loginSchema = yup.object({
+  email: yup.string().email("Неверный email").required("Email обязателен"),
+  password: yup
+    .string()
+    .min(6, "Пароль должен быть не менее 6 символов")
+    .required("Пароль обязателен"),
+});
+
+const registerSchema = yup.object({
+  name: yup.string().required("Имя обязательно"),
+  email: yup.string().email("Неверный email").required("Email обязателен"),
+  password: yup
+    .string()
+    .min(6, "Пароль должен быть не менее 6 символов")
+    .required("Пароль обязателен"),
+});
 
 export const Auth = () => {
   const [isRegistering, setIsRegistering] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const toast = useToast();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(isRegistering ? registerSchema : loginSchema),
+  });
 
+  const onSubmit = (data) => {
     if (isRegistering) {
       toast({
         title: "Регистрация успешна",
@@ -37,10 +61,7 @@ export const Auth = () => {
         isClosable: true,
       });
     }
-
-    setEmail("");
-    setPassword("");
-    setName("");
+    reset();
   };
 
   return (
@@ -52,38 +73,36 @@ export const Auth = () => {
       borderRadius="lg"
       boxShadow="lg"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={4}>
           {isRegistering && (
-            <FormControl id="name" isRequired>
+            <FormControl isInvalid={errors.name}>
               <FormLabel>Имя</FormLabel>
-              <Input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Введите ваше имя"
-              />
+              <Input {...register("name")} placeholder="Введите ваше имя" />
+              <Text color="red.500" fontSize="sm">
+                {errors.name?.message}
+              </Text>
             </FormControl>
           )}
 
-          <FormControl id="email" isRequired>
+          <FormControl isInvalid={errors.email}>
             <FormLabel>Email</FormLabel>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Введите ваш email"
-            />
+            <Input {...register("email")} placeholder="Введите ваш email" />
+            <Text color="red.500" fontSize="sm">
+              {errors.email?.message}
+            </Text>
           </FormControl>
 
-          <FormControl id="password" isRequired>
+          <FormControl isInvalid={errors.password}>
             <FormLabel>Пароль</FormLabel>
             <Input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
               placeholder="Введите ваш пароль"
             />
+            <Text color="red.500" fontSize="sm">
+              {errors.password?.message}
+            </Text>
           </FormControl>
 
           <Button type="submit" colorScheme="teal" size="lg" width="full">
