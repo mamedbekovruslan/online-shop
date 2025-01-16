@@ -43,7 +43,7 @@ export const Auth = () => {
     resolver: yupResolver(isRegistering ? registerSchema : loginSchema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (_) => {
     if (isRegistering) {
       toast({
         title: "Регистрация успешна",

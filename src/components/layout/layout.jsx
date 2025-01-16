@@ -1,16 +1,16 @@
 import { Box } from "@chakra-ui/react";
+import { Header } from "../header/header";
 
 export const Layout = ({ children }) => {
   return (
     <Box
-      minHeight="100vh"
+      // minHeight="100vh"
       display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      bg="gray.50" // фоновый цвет
-      p={4} // отступы
     >
+      <Header />
       {children}
     </Box>
   );
