@@ -14,6 +14,9 @@ export const Header = () => {
         <Link to="/cart" style={{ color: "white" }}>
           Корзина
         </Link>
+        <Link to="/admin" style={{ color: "white" }}>
+          Админка
+        </Link>
       </Box>
       <Box position="absolute" right="5">
         <Link to="/auth" style={{ color: "white" }}>
